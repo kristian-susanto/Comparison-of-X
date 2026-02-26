@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find Value X - Ratio Calculator</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>"
+    />
+    <style>
+      /* CSS Variables for Easy Theme Switching */
+      :root {
+        --bg-color: #f4f7f6;
+        --card-bg: #ffffff;
+        --text-main: #333333;
+        --text-sub: #666666;
+        --border-color: #dddddd;
+        --primary-color: #4caf50;
+        --primary-hover: #45a049;
+        --result-bg: #e8f5e9;
+        --result-text: #2e7d32;
+        --input-bg: #ffffff;
+      }
+
+      [data-theme="dark"] {
+        --bg-color: #121212;
+        --card-bg: #1e1e1e;
+        --text-main: #e0e0e0;
+        --text-sub: #aaaaaa;
+        --border-color: #444444;
+        --primary-color: #66bb6a;
+        --primary-hover: #81c784;
+        --result-bg: #1b2e1c;
+        --result-text: #a5d6a7;
+        --input-bg: #2d2d2d;
+      }
+
+      body {
+        font-family: "Segoe UI", Roboto, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 15px;
+        transition: background 0.3s ease;
+      }
+
+      .card {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        width: 100%;
+        max-width: 450px;
+        position: relative;
+      }
+
+      /* Theme Toggle Button */
+      .theme-toggle {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        color: var(--text-main);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.6rem;
+      }
+      .subtitle {
+        color: var(--text-sub);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+        line-height: 1.4;
+      }
+
+      .equation-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 2rem;
+      }
+
+      .fraction {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 0;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        outline: none;
+        background: var(--input-bg);
+        color: var(--text-main);
+        transition: 0.3s;
+        box-sizing: border-box;
+      }
+      input:focus {
+        border-color: var(--primary-color);
+      }
+
+      .line {
+        width: 90%;
+        height: 2px;
+        background-color: var(--text-main);
+        margin: 12px 0;
+      }
+      .equal-sign {
+        font-weight: bold;
+        font-size: 2rem;
+        color: var(--primary-color);
+      }
+
+      .x-box {
+        width: 100%;
+        padding: 12px;
+        border: 2px dashed var(--primary-color);
+        border-radius: 12px;
+        color: var(--primary-color);
+        font-weight: bold;
+        font-size: 1.1rem;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+
+      button.calculate-btn {
+        width: 100%;
+        padding: 14px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: bold;
+        transition: 0.2s;
+      }
+      button.calculate-btn:hover {
+        background: var(--primary-hover);
+      }
+
+      .result-box {
+        background: var(--result-bg);
+        padding: 1rem;
+        border-radius: 12px;
+        color: var(--result-text);
+        font-weight: bold;
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        min-height: 20px;
+      }
+
+      @media (max-width: 380px) {
+        .equation-wrapper {
+          gap: 5px;
+        }
+        input,
+        .x-box {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+        🌙
+      </button>
+
+      <h2>Find Value X</h2>
+      <div class="subtitle">
+        (Example: 300 items for 10 people = 700 items for X)
+      </div>
+
+      <div class="equation-wrapper">
+        <div class="fraction">
+          <input
+            type="text"
+            id="a"
+            placeholder="3,000"
+            oninput="formatInput(this)"
+            inputmode="decimal"
+          />
+          <div class="line"></div>
+          <input
+            type="text"
+            id="b"
+            placeholder="1,000"
+            oninput="formatInput(this)"
+            inputmode="decimal"
+          />
+        </div>
+
+        <div class="equal-sign">=</div>
+
+        <div class="fraction">
+          <input
+            type="text"
+            id="c"
+            placeholder="7,000"
+            oninput="formatInput(this)"
+            inputmode="decimal"
+          />
+          <div class="line"></div>
+          <div class="x-box" id="x-display">X</div>
+        </div>
+      </div>
+
+      <button class="calculate-btn" onclick="calculateX()">Calculate X</button>
+
+      <div class="result-box" id="hasil">Enter numbers and click calculate</div>
+    </div>
+
+    <script>
+      // --- Theme Toggle Logic ---
+      function toggleTheme() {
+        const body = document.documentElement;
+        const btn = document.getElementById("themeBtn");
+        if (body.getAttribute("data-theme") === "dark") {
+          body.removeAttribute("data-theme");
+          btn.innerText = "🌙";
+        } else {
+          body.setAttribute("data-theme", "dark");
+          btn.innerText = "☀️";
+        }
+      }
+
+      // --- Input Formatting Logic ---
+      function formatInput(input) {
+        let cursorSelection = input.selectionStart;
+        let originalLength = input.value.length;
+        let value = input.value.replace(/,/g, "");
+        value = value.replace(/[^0-9.]/g, "");
+        let parts = value.split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        input.value = parts.length > 1 ? parts[0] + "." + parts[1] : parts[0];
+        let newLength = input.value.length;
+        input.setSelectionRange(
+          cursorSelection + (newLength - originalLength),
+          cursorSelection + (newLength - originalLength),
+        );
+      }
+
+      function parseNumber(str) {
+        return parseFloat(str.replace(/,/g, "")) || 0;
+      }
+
+      // --- Calculation Logic ---
+      function calculateX() {
+        const aStr = document.getElementById("a").value;
+        const bStr = document.getElementById("b").value;
+        const cStr = document.getElementById("c").value;
+        const a = parseNumber(aStr);
+        const b = parseNumber(bStr);
+        const c = parseNumber(cStr);
+        const hasilDiv = document.getElementById("hasil");
+        const xDisplay = document.getElementById("x-display");
+
+        if (!aStr || !bStr || !cStr) {
+          hasilDiv.innerText = "Please fill in all fields!";
+          hasilDiv.style.color = "red";
+          return;
+        }
+
+        if (a === 0) {
+          hasilDiv.innerText = "Top-left value cannot be zero";
+          hasilDiv.style.color = "red";
+          return;
+        }
+
+        const x = (b * c) / a;
+        const formatX = x.toLocaleString("en-US", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        });
+
+        xDisplay.innerText = formatX;
+        hasilDiv.style.color = "var(--result-text)";
+        hasilDiv.innerText = "The value of X is: " + formatX;
+      }
+    </script>
+  </body>
+</html>
