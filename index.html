@@ -2,14 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Solve for X in a proportion. Enter three values and get the missing one instantly." />
     <title>Find Value X - Ratio Calculator</title>
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>"
     />
     <style>
-      /* CSS Variables for Easy Theme Switching */
+      /* ---------- Theme Variables ---------- */
       :root {
         --bg-color: #f4f7f6;
         --card-bg: #ffffff;
@@ -21,6 +22,7 @@
         --result-bg: #e8f5e9;
         --result-text: #2e7d32;
         --input-bg: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       }
 
       [data-theme="dark"] {
@@ -34,71 +36,97 @@
         --result-bg: #1b2e1c;
         --result-text: #a5d6a7;
         --input-bg: #2d2d2d;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
       }
 
       body {
-        font-family: "Segoe UI", Roboto, sans-serif;
+        font-family: "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
         background-color: var(--bg-color);
         color: var(--text-main);
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
+        min-height: 100dvh; /* better on mobile browsers */
         margin: 0;
-        padding: 15px;
+        padding: clamp(10px, 4vw, 20px);
+        transition: background 0.3s ease, color 0.3s ease;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      /* ---------- Card ---------- */
+      .card {
+        background: var(--card-bg);
+        padding: clamp(1.1rem, 5vw, 2rem);
+        border-radius: clamp(14px, 4vw, 20px);
+        box-shadow: var(--shadow);
+        text-align: center;
+        width: 100%;
+        max-width: 460px;
+        position: relative;
         transition: background 0.3s ease;
       }
 
-      .card {
-        background: var(--card-bg);
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        text-align: center;
-        width: 100%;
-        max-width: 450px;
-        position: relative;
-      }
-
-      /* Theme Toggle Button */
+      /* ---------- Theme Toggle ---------- */
       .theme-toggle {
         position: absolute;
-        top: 15px;
-        right: 15px;
+        top: 12px;
+        right: 12px;
         background: none;
         border: 1px solid var(--border-color);
         border-radius: 50%;
-        width: 35px;
-        height: 35px;
+        width: 38px;
+        height: 38px;
         cursor: pointer;
         color: var(--text-main);
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        line-height: 1;
+        transition: background 0.2s ease, transform 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .theme-toggle:hover {
+        background: var(--result-bg);
+      }
+      .theme-toggle:active {
+        transform: scale(0.92);
       }
 
       h2 {
-        margin: 0 0 10px 0;
-        font-size: 1.6rem;
-      }
-      .subtitle {
-        color: var(--text-sub);
-        font-size: 0.85rem;
-        margin-bottom: 2rem;
-        line-height: 1.4;
+        margin: 0 0 8px 0;
+        font-size: clamp(1.25rem, 5.5vw, 1.6rem);
+        padding: 0 44px; /* keep clear of the toggle button */
       }
 
+      .subtitle {
+        color: var(--text-sub);
+        font-size: clamp(0.75rem, 3.2vw, 0.85rem);
+        margin-bottom: clamp(1.2rem, 6vw, 2rem);
+        line-height: 1.45;
+      }
+
+      /* ---------- Equation ---------- */
       .equation-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 12px;
-        margin-bottom: 2rem;
+        gap: clamp(6px, 2.5vw, 12px);
+        margin-bottom: clamp(1.2rem, 6vw, 2rem);
       }
 
       .fraction {
-        flex: 1;
+        flex: 1 1 0;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -107,96 +135,156 @@
 
       input {
         width: 100%;
-        padding: 12px;
+        padding: clamp(10px, 3.5vw, 12px);
         text-align: center;
         border: 2px solid var(--border-color);
-        border-radius: 12px;
-        font-size: 1.1rem;
+        border-radius: clamp(10px, 3vw, 12px);
+        font-size: clamp(0.95rem, 4.2vw, 1.1rem);
         font-weight: bold;
         outline: none;
         background: var(--input-bg);
         color: var(--text-main);
-        transition: 0.3s;
-        box-sizing: border-box;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        font-family: inherit;
+        min-width: 0;
       }
       input:focus {
         border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.18);
       }
 
       .line {
         width: 90%;
         height: 2px;
         background-color: var(--text-main);
-        margin: 12px 0;
+        margin: clamp(8px, 3vw, 12px) 0;
       }
+
       .equal-sign {
         font-weight: bold;
-        font-size: 2rem;
+        font-size: clamp(1.4rem, 6vw, 2rem);
         color: var(--primary-color);
+        flex: 0 0 auto;
       }
 
       .x-box {
         width: 100%;
-        padding: 12px;
+        padding: clamp(10px, 3.5vw, 12px);
         border: 2px dashed var(--primary-color);
-        border-radius: 12px;
+        border-radius: clamp(10px, 3vw, 12px);
         color: var(--primary-color);
         font-weight: bold;
-        font-size: 1.1rem;
-        min-height: 48px;
+        font-size: clamp(0.95rem, 4.2vw, 1.1rem);
+        min-height: 46px;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-sizing: border-box;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+        transition: background 0.25s ease;
       }
 
+      /* ---------- Button ---------- */
       button.calculate-btn {
         width: 100%;
-        padding: 14px;
+        padding: clamp(12px, 4vw, 14px);
         background: var(--primary-color);
-        color: white;
+        color: #fff;
         border: none;
-        border-radius: 12px;
+        border-radius: clamp(10px, 3vw, 12px);
         cursor: pointer;
-        font-size: 1.1rem;
+        font-size: clamp(1rem, 4.2vw, 1.1rem);
         font-weight: bold;
-        transition: 0.2s;
+        font-family: inherit;
+        transition: background 0.2s ease, transform 0.1s ease;
+        -webkit-tap-highlight-color: transparent;
       }
       button.calculate-btn:hover {
         background: var(--primary-hover);
       }
-
-      .result-box {
-        background: var(--result-bg);
-        padding: 1rem;
-        border-radius: 12px;
-        color: var(--result-text);
-        font-weight: bold;
-        margin-top: 1.5rem;
-        font-size: 0.95rem;
-        min-height: 20px;
+      button.calculate-btn:active {
+        transform: scale(0.98);
       }
 
+      /* ---------- Result ---------- */
+      .result-box {
+        background: var(--result-bg);
+        padding: clamp(0.85rem, 3.5vw, 1rem);
+        border-radius: clamp(10px, 3vw, 12px);
+        color: var(--result-text);
+        font-weight: bold;
+        margin-top: clamp(1rem, 5vw, 1.5rem);
+        font-size: clamp(0.85rem, 3.6vw, 0.95rem);
+        min-height: 20px;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+        transition: background 0.3s ease;
+      }
+
+      /* ---------- Small phones ---------- */
       @media (max-width: 380px) {
         .equation-wrapper {
           gap: 5px;
         }
+        .equal-sign {
+          font-size: 1.2rem;
+        }
         input,
         .x-box {
-          font-size: 1rem;
+          padding: 9px 6px;
+          font-size: 0.9rem;
+        }
+        .x-box {
+          min-height: 40px;
+        }
+      }
+
+      /* ---------- Landscape phones / short screens ---------- */
+      @media (max-height: 560px) and (orientation: landscape) {
+        body {
+          align-items: flex-start;
+        }
+        .card {
+          padding: 1rem 1.25rem;
+        }
+        .subtitle {
+          margin-bottom: 0.9rem;
+        }
+        .equation-wrapper {
+          margin-bottom: 0.9rem;
+        }
+      }
+
+      /* ---------- Large screens ---------- */
+      @media (min-width: 768px) {
+        .card {
+          max-width: 480px;
+        }
+      }
+
+      /* ---------- Accessibility ---------- */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+          animation: none !important;
         }
       }
     </style>
   </head>
   <body>
     <div class="card">
-      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+      <button
+        class="theme-toggle"
+        onclick="toggleTheme()"
+        id="themeBtn"
+        aria-label="Toggle dark mode"
+      >
         🌙
       </button>
 
       <h2>Find Value X</h2>
       <div class="subtitle">
-        (Example: 300 items for 10 people = 700 items for X)
+        Solve a proportion. Example: 3,000 items for 1,000 people = 7,000 items for X people.
       </div>
 
       <div class="equation-wrapper">
@@ -207,6 +295,8 @@
             placeholder="3,000"
             oninput="formatInput(this)"
             inputmode="decimal"
+            autocomplete="off"
+            aria-label="Top-left value (numerator of first ratio)"
           />
           <div class="line"></div>
           <input
@@ -215,6 +305,8 @@
             placeholder="1,000"
             oninput="formatInput(this)"
             inputmode="decimal"
+            autocomplete="off"
+            aria-label="Bottom-left value (denominator of first ratio)"
           />
         </div>
 
@@ -227,6 +319,8 @@
             placeholder="7,000"
             oninput="formatInput(this)"
             inputmode="decimal"
+            autocomplete="off"
+            aria-label="Top-right value (numerator of second ratio)"
           />
           <div class="line"></div>
           <div class="x-box" id="x-display">X</div>
@@ -235,63 +329,80 @@
 
       <button class="calculate-btn" onclick="calculateX()">Calculate X</button>
 
-      <div class="result-box" id="hasil">Enter numbers and click calculate</div>
+      <div class="result-box" id="hasil" role="status" aria-live="polite">
+        Enter the numbers, then press Enter or tap Calculate.
+      </div>
     </div>
 
     <script>
-      // --- Theme Toggle Logic ---
+      /* ---------- Theme Toggle ---------- */
       function toggleTheme() {
-        const body = document.documentElement;
+        const root = document.documentElement;
         const btn = document.getElementById("themeBtn");
-        if (body.getAttribute("data-theme") === "dark") {
-          body.removeAttribute("data-theme");
+        if (root.getAttribute("data-theme") === "dark") {
+          root.removeAttribute("data-theme");
           btn.innerText = "🌙";
+          btn.setAttribute("aria-label", "Switch to dark mode");
         } else {
-          body.setAttribute("data-theme", "dark");
+          root.setAttribute("data-theme", "dark");
           btn.innerText = "☀️";
+          btn.setAttribute("aria-label", "Switch to light mode");
         }
       }
 
-      // --- Input Formatting Logic ---
+      /* ---------- Input Formatting ---------- */
       function formatInput(input) {
-        let cursorSelection = input.selectionStart;
-        let originalLength = input.value.length;
+        const cursorSelection = input.selectionStart;
+        const originalLength = input.value.length;
+
         let value = input.value.replace(/,/g, "");
         value = value.replace(/[^0-9.]/g, "");
-        let parts = value.split(".");
+
+        // keep only the first decimal point
+        const firstDot = value.indexOf(".");
+        if (firstDot !== -1) {
+          value =
+            value.slice(0, firstDot + 1) +
+            value.slice(firstDot + 1).replace(/\./g, "");
+        }
+
+        const parts = value.split(".");
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         input.value = parts.length > 1 ? parts[0] + "." + parts[1] : parts[0];
-        let newLength = input.value.length;
-        input.setSelectionRange(
-          cursorSelection + (newLength - originalLength),
-          cursorSelection + (newLength - originalLength),
-        );
+
+        const newLength = input.value.length;
+        const diff = newLength - originalLength;
+        const newPos = Math.max(0, cursorSelection + diff);
+        input.setSelectionRange(newPos, newPos);
       }
 
       function parseNumber(str) {
-        return parseFloat(str.replace(/,/g, "")) || 0;
+        const n = parseFloat(String(str).replace(/,/g, ""));
+        return isNaN(n) ? 0 : n;
       }
 
-      // --- Calculation Logic ---
+      /* ---------- Calculation ---------- */
       function calculateX() {
-        const aStr = document.getElementById("a").value;
-        const bStr = document.getElementById("b").value;
-        const cStr = document.getElementById("c").value;
+        const aStr = document.getElementById("a").value.trim();
+        const bStr = document.getElementById("b").value.trim();
+        const cStr = document.getElementById("c").value.trim();
+
         const a = parseNumber(aStr);
         const b = parseNumber(bStr);
         const c = parseNumber(cStr);
+
         const hasilDiv = document.getElementById("hasil");
         const xDisplay = document.getElementById("x-display");
 
         if (!aStr || !bStr || !cStr) {
-          hasilDiv.innerText = "Please fill in all fields!";
-          hasilDiv.style.color = "red";
+          hasilDiv.style.color = "#e53935";
+          hasilDiv.innerText = "Please fill in all three fields.";
           return;
         }
 
         if (a === 0) {
-          hasilDiv.innerText = "Top-left value cannot be zero";
-          hasilDiv.style.color = "red";
+          hasilDiv.style.color = "#e53935";
+          hasilDiv.innerText = "The top-left value cannot be zero.";
           return;
         }
 
@@ -305,6 +416,33 @@
         hasilDiv.style.color = "var(--result-text)";
         hasilDiv.innerText = "The value of X is: " + formatX;
       }
+
+      /* ---------- Enter key triggers calculation ---------- */
+      const inputIds = ["a", "b", "c"];
+
+      inputIds.forEach(function (id) {
+        const el = document.getElementById(id);
+        el.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.keyCode === 13) {
+            event.preventDefault();
+            calculateX();
+
+            // move focus to the next empty field (nice on mobile)
+            const next = inputIds
+              .map(function (i) { return document.getElementById(i); })
+              .find(function (input) { return input.value.trim() === ""; });
+            if (next) next.focus();
+          }
+        });
+      });
+
+      /* Also allow Enter anywhere on the page */
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && event.target.tagName !== "INPUT") {
+          event.preventDefault();
+          calculateX();
+        }
+      });
     </script>
   </body>
 </html>
