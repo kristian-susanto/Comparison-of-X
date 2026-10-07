@@ -1,4 +1,4 @@
-# 🧮 X-Value Ratio Calculator
+# 🧮 Comparison of X
 
 A clean, responsive, and user-friendly web application designed to solve **direct proportion** problems (cross-multiplication). Whether you're calculating ingredient scales, currency conversions, or resource distribution, this tool helps you find the missing value ($X$) instantly.
 
