@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Solve for X in a proportion. Enter three values and get the missing one instantly." />
-    <title>Find Value X - Ratio Calculator</title>
+    <title>Comparison of X</title>
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>"
@@ -12,31 +12,35 @@
     <style>
       /* ---------- Theme Variables ---------- */
       :root {
-        --bg-color: #f4f7f6;
+        --bg-color: #f5f6fa;
         --card-bg: #ffffff;
-        --text-main: #333333;
-        --text-sub: #666666;
-        --border-color: #dddddd;
-        --primary-color: #4caf50;
-        --primary-hover: #45a049;
-        --result-bg: #e8f5e9;
-        --result-text: #2e7d32;
+        --text-main: #2c2c3a;
+        --text-sub: #6b6b80;
+        --border-color: #dcdce6;
+        --primary-color: #5c6bc0;
+        --primary-hover: #4a58a8;
+        --result-bg: #eceefb;
+        --result-text: #3f4a9c;
         --input-bg: #ffffff;
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        --shadow: 0 10px 30px rgba(92, 107, 192, 0.18);
+        --focus-ring: rgba(92, 107, 192, 0.22);
+        --error-color: #e53935;
       }
 
       [data-theme="dark"] {
-        --bg-color: #121212;
-        --card-bg: #1e1e1e;
-        --text-main: #e0e0e0;
-        --text-sub: #aaaaaa;
-        --border-color: #444444;
-        --primary-color: #66bb6a;
-        --primary-hover: #81c784;
-        --result-bg: #1b2e1c;
-        --result-text: #a5d6a7;
-        --input-bg: #2d2d2d;
+        --bg-color: #101018;
+        --card-bg: #1c1c28;
+        --text-main: #e5e5f0;
+        --text-sub: #a0a0b8;
+        --border-color: #3a3a4e;
+        --primary-color: #7986cb;
+        --primary-hover: #9fa8da;
+        --result-bg: #1e2140;
+        --result-text: #b0b8f0;
+        --input-bg: #26263a;
         --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        --focus-ring: rgba(121, 134, 203, 0.28);
+        --error-color: #ef5350;
       }
 
       * {
@@ -56,7 +60,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        min-height: 100dvh; /* better on mobile browsers */
+        min-height: 100dvh;
         margin: 0;
         padding: clamp(10px, 4vw, 20px);
         transition: background 0.3s ease, color 0.3s ease;
@@ -73,7 +77,7 @@
         width: 100%;
         max-width: 460px;
         position: relative;
-        transition: background 0.3s ease;
+        transition: background 0.3s ease, box-shadow 0.3s ease;
       }
 
       /* ---------- Theme Toggle ---------- */
@@ -106,7 +110,7 @@
       h2 {
         margin: 0 0 8px 0;
         font-size: clamp(1.25rem, 5.5vw, 1.6rem);
-        padding: 0 44px; /* keep clear of the toggle button */
+        padding: 0 44px;
       }
 
       .subtitle {
@@ -150,7 +154,7 @@
       }
       input:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.18);
+        box-shadow: 0 0 0 3px var(--focus-ring);
       }
 
       .line {
@@ -218,7 +222,7 @@
         min-height: 20px;
         line-height: 1.4;
         overflow-wrap: anywhere;
-        transition: background 0.3s ease;
+        transition: background 0.3s ease, color 0.3s ease;
       }
 
       /* ---------- Small phones ---------- */
@@ -284,7 +288,7 @@
 
       <h2>Find Value X</h2>
       <div class="subtitle">
-        Solve a proportion. Example: 3,000 items for 1,000 people = 7,000 items for X people.
+        Solve a proportion. Example: 3,000 items for 1,000 boxes = 7,000 items for X boxes.
       </div>
 
       <div class="equation-wrapper">
@@ -358,7 +362,6 @@
         let value = input.value.replace(/,/g, "");
         value = value.replace(/[^0-9.]/g, "");
 
-        // keep only the first decimal point
         const firstDot = value.indexOf(".");
         if (firstDot !== -1) {
           value =
@@ -395,13 +398,13 @@
         const xDisplay = document.getElementById("x-display");
 
         if (!aStr || !bStr || !cStr) {
-          hasilDiv.style.color = "#e53935";
+          hasilDiv.style.color = "var(--error-color)";
           hasilDiv.innerText = "Please fill in all three fields.";
           return;
         }
 
         if (a === 0) {
-          hasilDiv.style.color = "#e53935";
+          hasilDiv.style.color = "var(--error-color)";
           hasilDiv.innerText = "The top-left value cannot be zero.";
           return;
         }
@@ -427,7 +430,6 @@
             event.preventDefault();
             calculateX();
 
-            // move focus to the next empty field (nice on mobile)
             const next = inputIds
               .map(function (i) { return document.getElementById(i); })
               .find(function (input) { return input.value.trim() === ""; });
@@ -436,7 +438,6 @@
         });
       });
 
-      /* Also allow Enter anywhere on the page */
       document.addEventListener("keydown", function (event) {
         if (event.key === "Enter" && event.target.tagName !== "INPUT") {
           event.preventDefault();
