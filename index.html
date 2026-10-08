@@ -333,7 +333,7 @@
 
       <button class="calculate-btn" onclick="calculateX()">Calculate X</button>
 
-      <div class="result-box" id="hasil" role="status" aria-live="polite">
+      <div class="result-box" id="result" role="status" aria-live="polite">
         Enter the numbers, then press Enter or tap Calculate.
       </div>
     </div>
@@ -394,18 +394,18 @@
         const b = parseNumber(bStr);
         const c = parseNumber(cStr);
 
-        const hasilDiv = document.getElementById("hasil");
+        const resultDiv = document.getElementById("result");
         const xDisplay = document.getElementById("x-display");
 
         if (!aStr || !bStr || !cStr) {
-          hasilDiv.style.color = "var(--error-color)";
-          hasilDiv.innerText = "Please fill in all three fields.";
+          resultDiv.style.color = "var(--error-color)";
+          resultDiv.innerText = "Please fill in all three fields.";
           return;
         }
 
         if (a === 0) {
-          hasilDiv.style.color = "var(--error-color)";
-          hasilDiv.innerText = "The top-left value cannot be zero.";
+          resultDiv.style.color = "var(--error-color)";
+          resultDiv.innerText = "The top-left value cannot be zero.";
           return;
         }
 
@@ -416,8 +416,8 @@
         });
 
         xDisplay.innerText = formatX;
-        hasilDiv.style.color = "var(--result-text)";
-        hasilDiv.innerText = "The value of X is: " + formatX;
+        resultDiv.style.color = "var(--result-text)";
+        resultDiv.innerText = "The value of X is: " + formatX;
       }
 
       /* ---------- Enter key triggers calculation ---------- */
